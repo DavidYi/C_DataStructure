@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "intlist.h"
+#include <limits.h>
+
+struct intlist{
+  int index;
+  int *list;
+  int listSize;
+};
+
+IntList* ilCreate(){
+  IntList *il = malloc(sizeof(IntList));
+
+  il->index = 0;
+  il->listSize = 5;
+  il->list = malloc(sizeof(int) * il->listSize);
+
+  return il;
+}
+
+IntList* ilCopy(IntList *il){
+  IntList *cil = malloc(sizeof(IntList));
+  int i;
+  
+  cil->index = il->index;
+  cil->listSize = il->listSize;
+  cil->list = malloc(sizeof(int) * cil->listSize);
+  
+  for (i = 0; i < il->index; i++)
+    cil->list[i] = il->list[i];
+
+  return cil;
+}
+
+void ilExpand (IntList *il){
+  int *newList;
+  int newSize = il->listSize + 10;
+  int i;
+  newList = malloc (newSize * sizeof(int));
+  for (i = 0; i < il->listSize; i++)
+    newList[i] = il->list[i];
+
+  if (il->list != NULL)
+    free(il->list);
+  
+  il->listSize = newSize;
+  il->list = newList;
+}
+
+void ilAppend(IntList *il, int val){
+  if (il->index == il->listSize){
+    ilExpand(il);
+  }
+  
+  il->list[il->index] = val;
+  il->index++;
+}
+
+int ilDelete (IntList *il, int pos){
+  if ((pos >= il->listSize) || (pos < 0))
+    return -1;
+
+  int i;
+  for (i = pos; i < il->index; i++){
+    il->list[i] = il->list[i + 1];
+  }
+  il->index--;
+  return 0;
+}
+
+int ilFind(IntList *il, int val){
+  int i;
+  
+  for (i = 0; i < il->index; i++){
+    if (il->list[i] == val){
+      return i;
+    }
+  }
+  return -1;
+}
+
+int ilGet (IntList *il, int pos){
+  if ((pos < il->index) && (pos >= 0))
+      return il->list[pos];
+  else
+    return INT_MIN;
+}
+
+int ilInsert(IntList *il, int pos, int val){
+  int i, temp;
+
+  if ((il->listSize <= pos) || (pos < 0))
+    return INT_MIN;
+  
+  if (il->index >= il->listSize)
+    ilExpand(il);
+
+  for (i = pos; i <= il->index; i++){
+    temp = il->list[i];
+    il->list[i] = val;
+    val = temp;
+  }
+  il->index++;
+    
+}
+
+int ilSize(IntList *il){
+  return il->index;
+}
+
+void ilPrint (IntList *il){
+  int i;
+
+  for (i = 0; i < il->index; i++)
+    printf ("%d: %d\n", i, il->list[i]);
+}

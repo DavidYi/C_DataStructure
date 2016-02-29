@@ -1,0 +1,6 @@
+//h in strings.h stands for header
+
+//definition 
+int length(char str[]);
+
+int getFile (char s[], int lim);
